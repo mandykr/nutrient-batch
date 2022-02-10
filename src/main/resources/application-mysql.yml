@@ -1,0 +1,37 @@
+server:
+  port: 8089
+
+spring:
+  batch:
+    job:
+      names: ${job.name:NONE}
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/nutrient_batch?characterEncoding=UTF-8&serverTimezone=UTC&rewriteBatchedStatements=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: mandy921117
+  initialize-schema: never
+
+logging.level:
+  org.hibernate.SQL: debug
+
+openapi:
+  supplementProduct:
+    name: supplementProduct
+    url: http://openapi.foodsafetykorea.go.kr/api/{keyId}/{serviceId}/{dataType}/{startIdx}/{endIdx}
+    serviceId: I0310
+    keyId: 1e9b74a494af4658a718
+  supplementExplain:
+    name: supplementExplain
+    url: http://openapi.foodsafetykorea.go.kr/api/{keyId}/{serviceId}/{dataType}/{startIdx}/{endIdx}
+    serviceId: I0030
+    keyId: 1e9b74a494af4658a718
