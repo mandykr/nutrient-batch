@@ -1,5 +1,25 @@
+server:
+  port: 8088
+
 spring:
   batch:
     job:
       names: ${job.name:NONE}
   initialize-schema: never
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+
+logging.level:
+  org.hibernate.SQL: debug
+
+openapi:
+  supplement:
+    name: supplement
+    url: http://openapi.foodsafetykorea.go.kr/api/{keyId}/{serviceId}/{dataType}/{startIdx}/{endIdx}
+    serviceId: I0310
+    keyId: 1e9b74a494af4658a718
