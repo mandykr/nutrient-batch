@@ -1,7 +1,7 @@
 package mandykr.nutrient.batch.config.supplement;
 
 import lombok.RequiredArgsConstructor;
-import mandykr.nutrient.batch.dto.openapi.foodsafety.SupplementExplainResponse;
+import mandykr.nutrient.batch.openapi.dto.foodsafety.SupplementExplainResponse;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;

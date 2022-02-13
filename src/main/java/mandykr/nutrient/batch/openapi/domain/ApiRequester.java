@@ -1,4 +1,4 @@
-package mandykr.nutrient.batch.domain;
+package mandykr.nutrient.batch.openapi.domain;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package mandykr.nutrient.batch.dto.openapi.foodsafety;
+package mandykr.nutrient.batch.openapi.dto.foodsafety;
 
 import lombok.Getter;
 import lombok.Setter;

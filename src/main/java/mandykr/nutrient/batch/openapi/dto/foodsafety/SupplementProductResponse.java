@@ -1,4 +1,4 @@
-package mandykr.nutrient.batch.dto.openapi.foodsafety;
+package mandykr.nutrient.batch.openapi.dto.foodsafety;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

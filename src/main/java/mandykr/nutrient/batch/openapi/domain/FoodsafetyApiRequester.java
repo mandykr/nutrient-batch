@@ -1,4 +1,4 @@
-package mandykr.nutrient.batch.domain;
+package mandykr.nutrient.batch.openapi.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mandykr.nutrient.batch.dto.openapi.foodsafety.FoodsafetyRequest;
+import mandykr.nutrient.batch.domain.Supplement;
+import mandykr.nutrient.batch.openapi.dto.foodsafety.FoodsafetyRequest;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -63,6 +64,7 @@ public class FoodsafetyApiRequester<T> implements ApiRequester<T> {
     }
 
     private ResponseEntity<String> apiCall(UriComponents uriComponents, HttpEntity<String> httpEntity) {
+        // TODO: read time out 문제 해결
         ResponseEntity<String> responseEntity =
                 restTemplate.exchange(uriComponents.toString(), HttpMethod.GET, httpEntity, String.class);
 

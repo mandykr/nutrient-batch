@@ -2,11 +2,11 @@ package mandykr.nutrient.batch.config.supplement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mandykr.nutrient.batch.domain.ApiRequester;
-import mandykr.nutrient.batch.domain.FoodsafetyApiRequester;
-import mandykr.nutrient.batch.dto.openapi.OpenapiConfig;
-import mandykr.nutrient.batch.dto.openapi.foodsafety.SupplementExplainResponse;
-import mandykr.nutrient.batch.dto.openapi.foodsafety.SupplementProductResponse;
+import mandykr.nutrient.batch.openapi.domain.ApiRequester;
+import mandykr.nutrient.batch.openapi.domain.FoodsafetyApiRequester;
+import mandykr.nutrient.batch.openapi.OpenapiConfig;
+import mandykr.nutrient.batch.openapi.dto.foodsafety.SupplementExplainResponse;
+import mandykr.nutrient.batch.openapi.dto.foodsafety.SupplementProductResponse;
 import mandykr.nutrient.batch.repository.SupplementRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

@@ -2,7 +2,7 @@ package mandykr.nutrient.batch.config.supplement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mandykr.nutrient.batch.dto.openapi.foodsafety.SupplementProductResponse;
+import mandykr.nutrient.batch.openapi.dto.foodsafety.SupplementProductResponse;
 import mandykr.nutrient.batch.domain.Supplement;
 import mandykr.nutrient.batch.repository.SupplementRepository;
 import org.springframework.batch.item.database.JpaItemWriter;
