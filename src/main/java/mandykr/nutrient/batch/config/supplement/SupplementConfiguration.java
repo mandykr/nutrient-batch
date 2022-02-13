@@ -2,6 +2,7 @@ package mandykr.nutrient.batch.config.supplement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mandykr.nutrient.batch.domain.Supplement;
 import mandykr.nutrient.batch.openapi.domain.ApiRequester;
 import mandykr.nutrient.batch.openapi.domain.FoodsafetyApiRequester;
 import mandykr.nutrient.batch.openapi.OpenapiConfig;
@@ -30,14 +31,15 @@ public class SupplementConfiguration {
 
     @Bean
     public Job supplementJob() {
+        FoodsafetyApiRequester<SupplementProductResponse> productRequester =
+                new FoodsafetyApiRequester<>(SupplementProductResponse.class, restTemplate, apiConfig.getSupplementProduct());
+        FoodsafetyApiRequester<SupplementExplainResponse> explainRequester =
+                new FoodsafetyApiRequester<>(SupplementExplainResponse.class, restTemplate, apiConfig.getSupplementProduct());
+
         return jobBuilderFactory.get("supplementJob")
                 .incrementer(new RunIdIncrementer())
-                .start(supplementProductApiCallStep(
-                        new FoodsafetyApiRequester<SupplementProductResponse>(
-                                restTemplate, apiConfig.getSupplementProduct())))
-                .next(supplementExplainApiCallStep(
-                        new FoodsafetyApiRequester<SupplementExplainResponse>(
-                                restTemplate, apiConfig.getSupplementProduct())))
+                .start(supplementProductApiCallStep(productRequester))
+                .next(supplementExplainApiCallStep(explainRequester))
                 .build();
     }
 
@@ -45,19 +47,21 @@ public class SupplementConfiguration {
     public Step supplementProductApiCallStep(ApiRequester<SupplementProductResponse> requester) {
         requester.request();
         return stepBuilderFactory.get("supplementProductApiCallStep")
-                .<SupplementProductResponse, SupplementProductResponse>chunk(CHUNK)
+                .<SupplementProductResponse, Supplement>chunk(CHUNK)
                 .reader(new SupplementProductItemReader(requester.getResponses()))
+                .processor(new SupplementProductItemProcessor(supplementRepository))
                 .writer(new SupplementProductItemWriter(supplementRepository))
                 .build();
     }
 
     @Bean
-    private Step supplementExplainApiCallStep(ApiRequester<SupplementExplainResponse> requester) {
+    public Step supplementExplainApiCallStep(ApiRequester<SupplementExplainResponse> requester) {
         requester.request();
         return stepBuilderFactory.get("supplementExplainApiCallStep")
-                .<SupplementExplainResponse, SupplementExplainResponse>chunk(CHUNK)
+                .<SupplementExplainResponse, Supplement>chunk(CHUNK)
                 .reader(new SupplementExplainItemReader(requester.getResponses()))
-                .writer(System.out::println)
+                .processor(new SupplementExplainItemProcessor(supplementRepository))
+                .writer(new SupplementExplainItemWriter(supplementRepository))
                 .build();
     }
 }

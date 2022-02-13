@@ -10,7 +10,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SupplementProductItemWriter extends JpaItemWriter<Supplement> {
+public class SupplementExplainItemWriter extends JpaItemWriter<Supplement> {
     private final SupplementRepository supplementRepository;
 
     @Override
@@ -21,6 +21,17 @@ public class SupplementProductItemWriter extends JpaItemWriter<Supplement> {
         if (items.isEmpty()) {
             return;
         }
-        supplementRepository.saveAll(items);
+        List<Supplement> supplements = supplementRepository.findAll();
+        editSupplements(supplements, items);
+    }
+
+    private void editSupplements(List<? extends Supplement> supplements, List<? extends Supplement> items) {
+        items.forEach(item -> {
+            supplements.forEach(s -> {
+                if (item.equals(s)) {
+                    s.editExplain(item);
+                }
+            });
+        });
     }
 }

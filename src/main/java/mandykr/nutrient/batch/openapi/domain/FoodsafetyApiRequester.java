@@ -1,12 +1,12 @@
 package mandykr.nutrient.batch.openapi.domain;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mandykr.nutrient.batch.domain.Supplement;
 import mandykr.nutrient.batch.openapi.dto.foodsafety.FoodsafetyRequest;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +20,7 @@ import java.util.*;
 @Getter
 public class FoodsafetyApiRequester<T> implements ApiRequester<T> {
     private static final int NUM_OF_ROWS = 1000;
+    private final Class<T> type;
     private final RestTemplate restTemplate;
     private final FoodsafetyRequest request;
     private List<T> responses = new ArrayList<>();
@@ -73,13 +74,30 @@ public class FoodsafetyApiRequester<T> implements ApiRequester<T> {
     }
 
     private boolean didNotSucceedResponse(ResponseEntity<String> responseEntity) {
-        return !responseEntity.getStatusCode().equals(HttpStatus.OK);
+        return !responseEntity.getStatusCode().equals(HttpStatus.OK) ||
+                isEmptyResponseData(responseEntity);
+    }
+
+    private boolean isEmptyResponseData(ResponseEntity<String> responseEntity) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        int totalCount = 0;
+        try {
+            JsonNode body = objectMapper.readTree(responseEntity.getBody());
+            JsonNode totalCountNode = body.path(request.getServiceId()).path("total_count");
+            String totalCountAsString = objectMapper.writeValueAsString(totalCountNode);
+            TypeReference ref = new TypeReference<Integer>() {
+            };
+            totalCount = (int) objectMapper.readValue(totalCountAsString, ref);
+        } catch (Exception e) {
+            log.info("total count json parse error: {}", e.getMessage());
+        }
+        return totalCount <= 0;
     }
 
     private void addSupplement(ResponseEntity<String> responseEntity) {
         List<T> resultList = parseTheResponse(responseEntity);
         if (resultList == null || resultList.isEmpty()) {
-            throw new NullPointerException("supplement result list is null");
+            throw new NullPointerException("response result list is null");
         }
         responses.addAll(resultList);
     }
@@ -90,12 +108,12 @@ public class FoodsafetyApiRequester<T> implements ApiRequester<T> {
         try {
             JsonNode body = objectMapper.readTree(responseEntity.getBody());
             JsonNode items = body.path(request.getServiceId()).path("row");
-            String supplements = objectMapper.writeValueAsString(items);
+            String itemsAsString = objectMapper.writeValueAsString(items);
             CollectionType javaType = objectMapper.getTypeFactory()
-                    .constructCollectionType(List.class, Supplement.class);
-            resultList = objectMapper.readValue(supplements, javaType);
+                    .constructCollectionType(List.class, type);
+            resultList = objectMapper.readValue(itemsAsString, javaType);
         } catch (Exception e) {
-            log.info("supplement json parse error");
+            log.info("supplement json parse error: {}", e.getMessage());
         }
 
         return resultList;
