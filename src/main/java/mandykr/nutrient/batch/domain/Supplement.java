@@ -1,14 +1,10 @@
 package mandykr.nutrient.batch.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -18,8 +14,14 @@ public class Supplement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
+	@Column(name = "SUPPLEMENT_ID")
     private Long id;
+
+    // base
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SUPPLEMENT_CATEGORY_ID")
+	private SupplementCategory supplementCategory;
+	private boolean deleteFlag; // TODO: admin 에서 삭제한 건 체크하기
 
     // common
 	private String lcnsNo;	// 인허가번호
