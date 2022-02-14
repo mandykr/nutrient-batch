@@ -30,7 +30,7 @@ public class Supplement {
 
     // product
 	private String gubun; // 품목구분
-	private String hItemNm; // 품목유형
+	private String hItemNm; // 품목유형 = category name
 	private String evlYr; // 보고년도
 	private String fyerPrdctnAbrtQy; // 연간생산능력(KG)
 	private String prdctnQy; // 생산량(KG)
@@ -148,5 +148,9 @@ public class Supplement {
 		this.indivRawmtrlNm = supplement.getIndivRawmtrlNm();
 		this.etcRawmtrlNm = supplement.getEtcRawmtrlNm();
 		this.capRawmtrlNm = supplement.getCapRawmtrlNm();
+	}
+
+	public void addCategory(SupplementCategoryBase category) {
+		this.supplementCategoryBase = category;
 	}
 }

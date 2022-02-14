@@ -51,6 +51,7 @@ public class SupplementConfiguration {
                 .start(supplementProductApiCallStep(productRequester))// TODO: Decide, Listener 추가
                 .next(supplementExplainApiCallStep(explainRequester))
                 .next(SupplementCategoryStep())
+                .next(SupplementCategoryUpdateStep())
                 .build();
     }
 
@@ -91,6 +92,23 @@ public class SupplementConfiguration {
                 .name("supplementCategoryBaseItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("select s from Supplement s group by hItemNm")
+                .build();
+    }
+
+    @Bean
+    public Step SupplementCategoryUpdateStep() {
+        return stepBuilderFactory.get("SupplementCategoryUpdateStep")
+                .<SupplementCategoryBase, SupplementCategoryBase>chunk(CHUNK)
+                .reader(supplementCategoryUpdateItemReader())
+                .writer(new SupplementCategoryUpdateItemWriter(supplementRepository))
+                .build();
+    }
+
+    private JpaCursorItemReader<SupplementCategoryBase> supplementCategoryUpdateItemReader() {
+        return new JpaCursorItemReaderBuilder<SupplementCategoryBase>()
+                .name("supplementCategoryUpdateItemReader")
+                .entityManagerFactory(entityManagerFactory)
+                .queryString("select c from SupplementCategoryBase c")
                 .build();
     }
 }
