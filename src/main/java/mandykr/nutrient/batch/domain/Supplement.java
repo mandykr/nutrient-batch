@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Getter
@@ -20,7 +19,7 @@ public class Supplement {
     // base
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUPPLEMENT_CATEGORY_ID")
-	private SupplementCategory supplementCategory;
+	private SupplementCategoryBase supplementCategoryBase;
 	private boolean deleteFlag; // TODO: admin 에서 삭제한 건 체크하기
 
     // common
@@ -41,10 +40,13 @@ public class Supplement {
 	private String pogDaycnt;	// 유통기한_일수
 	private String dispos;	// 성상
 	private String ntkMthd;	// 섭취방법
+	@Lob
 	private String primaryFnclty;	// 주된기능성
+	@Lob
 	private String iftknAtntMatrCn;	// 섭취시주의사항
 	private String cstdyMthd;	// 보관방법
 	private String prdlstCdnm;	// 유형
+	@Lob
 	private String stdrStnd;	// 기준규격
 	private String hiengLntrtDvsNm;	// 고열량저영양여부
 	private String production;	// 생산종료여부
@@ -54,7 +56,9 @@ public class Supplement {
 	private String rawmtrlNm;	// 품목유형(기능지표성분)
 	private String indutyCdNm;	//업종
 	private String lastUpdtDtm;	// 최종수정일자
+	@Lob
 	private String indivRawmtrlNm; 	// 기능성 원재료
+	@Lob
 	private String etcRawmtrlNm;	// 기타 원재료
 	private String capRawmtrlNm;	// 캡슐 원재료
 
@@ -144,18 +148,5 @@ public class Supplement {
 		this.indivRawmtrlNm = supplement.getIndivRawmtrlNm();
 		this.etcRawmtrlNm = supplement.getEtcRawmtrlNm();
 		this.capRawmtrlNm = supplement.getCapRawmtrlNm();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Supplement that = (Supplement) o;
-		return id.equals(that.id) || prdlstNm.equals(that.prdlstNm);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, prdlstNm);
 	}
 }

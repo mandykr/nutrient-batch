@@ -81,15 +81,20 @@ public class FoodsafetyApiRequester<T> implements ApiRequester<T> {
     private boolean isEmptyResponseData(ResponseEntity<String> responseEntity) {
         ObjectMapper objectMapper = new ObjectMapper();
         int totalCount = 0;
+        String message = "";
         try {
             JsonNode body = objectMapper.readTree(responseEntity.getBody());
+
+            JsonNode messageNode = body.path(request.getServiceId()).path("RESULT").path("MSG");
+            message = objectMapper.writeValueAsString(messageNode);
+
             JsonNode totalCountNode = body.path(request.getServiceId()).path("total_count");
             String totalCountAsString = objectMapper.writeValueAsString(totalCountNode);
-            TypeReference ref = new TypeReference<Integer>() {
+            TypeReference refInteger = new TypeReference<Integer>() {
             };
-            totalCount = (int) objectMapper.readValue(totalCountAsString, ref);
+            totalCount = (int) objectMapper.readValue(totalCountAsString, refInteger);
         } catch (Exception e) {
-            log.info("total count json parse error: {}", e.getMessage());
+            log.info("total count json parse error: {}, {}", e.getMessage(), message);
         }
         return totalCount <= 0;
     }
@@ -105,15 +110,20 @@ public class FoodsafetyApiRequester<T> implements ApiRequester<T> {
     private List<T> parseTheResponse(ResponseEntity<String> responseEntity) {
         ObjectMapper objectMapper = new ObjectMapper();
         List<T> resultList = new ArrayList<>();
+        String message = "";
         try {
             JsonNode body = objectMapper.readTree(responseEntity.getBody());
+
+            JsonNode messageNode = body.path(request.getServiceId()).path("RESULT").path("MSG");
+            message = objectMapper.writeValueAsString(messageNode);
+
             JsonNode items = body.path(request.getServiceId()).path("row");
             String itemsAsString = objectMapper.writeValueAsString(items);
             CollectionType javaType = objectMapper.getTypeFactory()
                     .constructCollectionType(List.class, type);
             resultList = objectMapper.readValue(itemsAsString, javaType);
         } catch (Exception e) {
-            log.info("supplement json parse error: {}", e.getMessage());
+            log.info("supplement json parse error: {}, {}", e.getMessage(), message);
         }
 
         return resultList;

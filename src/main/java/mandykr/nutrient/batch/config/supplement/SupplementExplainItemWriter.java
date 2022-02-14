@@ -28,7 +28,7 @@ public class SupplementExplainItemWriter extends JpaItemWriter<Supplement> {
     private void editSupplements(List<? extends Supplement> supplements, List<? extends Supplement> items) {
         items.forEach(item -> {
             supplements.forEach(s -> {
-                if (item.equals(s)) {
+                if (item.getPrdlstReportNo().equals(s.getPrdlstReportNo())) {
                     s.editExplain(item);
                 }
             });
