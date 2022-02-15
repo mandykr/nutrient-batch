@@ -20,7 +20,7 @@ public class Supplement {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUPPLEMENT_CATEGORY_ID")
 	private SupplementCategoryBase supplementCategoryBase;
-	private boolean deleteFlag; // TODO: admin 에서 삭제한 건 체크하기
+	private boolean deleted = Boolean.FALSE;
 
     // common
 	private String lcnsNo;	// 인허가번호
